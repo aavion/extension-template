@@ -1,0 +1,18 @@
+# Update-features use this manifest to check for new updates for the specified channel.
+# You may alter the source repository (PACKAGE_SOURCE), if you use a different fork.
+# PACKAGE_CHANNEL defines the target branch inside the specified repository.
+
+##> aavion/icon-captcha manifest ###
+PACKAGE_AUTHOR=aavion Media
+PACKAGE_SLUG=icon-captcha
+PACKAGE_NAME=IconCaptcha
+PACKAGE_DESCRIPTION=Default captcha provider for aavion Studio
+PACKAGE_VERSION=0.1.0
+PACKAGE_SCOPE=captcha-provider
+PACKAGE_DEPENDENCIES=[["system","0.2.6"]]
+PACKAGE_LICENSE=MIT
+PACKAGE_HOMEPAGE=https://www.aavion.media
+PACKAGE_CHANNEL=main
+PACKAGE_SOURCE=https://github.com/aavion/icon-captcha
+PACKAGE_DATE=2026-06-19
+##< aavion/icon-captcha manifest ###
