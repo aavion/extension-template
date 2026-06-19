@@ -1,1 +1,3 @@
-/* Placeholder */
+export function packageTemplateReady() {
+    return true;
+}

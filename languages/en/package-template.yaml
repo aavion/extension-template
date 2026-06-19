@@ -1,3 +1,3 @@
 pkg:
-  icon-captcha:
-    placeholder: 'Icon captcha placeholder'
+  package-template:
+    placeholder: "This is a placeholder file for the English language. Please replace this text with the actual translations for your package."
