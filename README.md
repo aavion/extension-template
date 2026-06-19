@@ -110,6 +110,166 @@ Rules:
 - Avoid broad side effects during extension discovery. Loading `extension.php` should describe contributions, not perform runtime work.
 - Do not directly include files, read or write files, spawn processes, open network sockets, read raw environment/request globals, or bypass extension points from `extension.php`.
 
+### Contribution Reference
+
+`extension.php` may return either a plain list of supported contribution objects or an `ExtensionContributions` builder instance. Keep examples in this template as pseudocode until the extension has real behavior.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use App\Core\Extension\ExtensionContributions;
+
+return ExtensionContributions::create()
+    // ->setting(...)
+    // ->staticView(...)
+    // ->apiEndpoint(...)
+;
+```
+
+Documented contribution surfaces:
+
+| Surface | Required scope | Use for |
+| --- | --- | --- |
+| settings | any extension | Extension-owned, typed configuration with translated labels/help text. |
+| static views | matching UI scope | Frontend/backend pages rendered through documented template roots. |
+| configurable static views | matching UI scope | Routes whose base slug can be changed through extension settings. |
+| dynamic views | matching UI scope | Documented slots inside existing frontend/backend surfaces. |
+| API endpoints and handlers | `api` | Extension-owned `/api/v1/extensions/{extension_slug}/...` endpoints. |
+| Live endpoints and handlers | documented Live surface | Extension-owned `/api/live/...` JSON or live-operation style endpoints. |
+| scheduler tasks/callables/action queues | scheduler contract | Extension-owned scheduled work. Extension tasks must not be trusted command tasks. |
+| cookie consent definitions | any extension | Extension-owned optional cookies or strictly scoped necessary cookies. |
+| database tables | `database` | Declarative extension-owned tables under the physical extension prefix. |
+| content schema presets | `content-schema` | Immutable extension-owned content schema presets. |
+
+Settings example:
+
+```php
+use App\Core\Config\ConfigValueType;
+use App\Core\Extension\ExtensionContributions;
+use App\Core\Extension\Settings\ExtensionSettingDefinition;
+use App\Form\FormInputType;
+
+return ExtensionContributions::create()
+    ->setting(new ExtensionSettingDefinition(
+        extensionName: '{EXTENSION_SLUG}',
+        key: 'feature.enabled',
+        label: 'ext.{EXTENSION_SLUG}.settings.feature_enabled.label',
+        defaultValue: true,
+        valueType: ConfigValueType::Boolean,
+        description: 'ext.{EXTENSION_SLUG}.settings.feature_enabled.help',
+        inputType: FormInputType::Checkbox,
+    ));
+```
+
+View example:
+
+```php
+use App\Core\Extension\ExtensionContributions;
+use App\View\Injection\StaticViewInjection;
+use App\View\Injection\ViewSurface;
+
+return ExtensionContributions::create()
+    ->staticView(new StaticViewInjection(
+        uid: '{EXTENSION_SLUG}.frontend.index',
+        surface: ViewSurface::Public,
+        pathSlug: '{EXTENSION_SLUG}',
+        label: 'ext.{EXTENSION_SLUG}.navigation.index',
+        template: '@frontend/{EXTENSION_SLUG}/index.html.twig',
+    ));
+```
+
+API endpoint example:
+
+```php
+use App\Api\Endpoint\ApiEndpointDefinition;
+use App\Core\Extension\ExtensionContributions;
+use Symfony\Component\HttpFoundation\Request;
+
+return ExtensionContributions::create()
+    ->apiEndpoint(new ApiEndpointDefinition(
+        owner: '{EXTENSION_SLUG}',
+        method: Request::METHOD_GET,
+        path: '/api/v1/extensions/{EXTENSION_SLUG}/status',
+        routeName: 'ext_{EXTENSION_SLUG_UNDERSCORE}_status',
+        operationId: '{EXTENSION_SLUG_PASCAL}Status',
+        summary: 'Read {EXTENSION_NAME} status.',
+        handlerKey: '{EXTENSION_SLUG}.status',
+        tags: ['extensions-{EXTENSION_SLUG}'],
+    ))
+    // ->apiEndpointHandler(new StatusHandler(...))
+;
+```
+
+Database contribution example:
+
+```php
+use App\Core\Extension\Database\ExtensionDatabaseColumn;
+use App\Core\Extension\Database\ExtensionDatabaseIndex;
+use App\Core\Extension\Database\ExtensionDatabaseTable;
+use App\Core\Extension\ExtensionContributions;
+
+return ExtensionContributions::create()
+    ->databaseTable(ExtensionDatabaseTable::create(
+        name: 'entry',
+        columns: [
+            ExtensionDatabaseColumn::string('uid', 36),
+            ExtensionDatabaseColumn::string('title', 160),
+            ExtensionDatabaseColumn::datetime('created_at'),
+        ],
+        primaryKey: ['uid'],
+        indexes: [
+            ExtensionDatabaseIndex::index('created_at_idx', ['created_at']),
+        ],
+    ));
+```
+
+Content schema contribution example:
+
+```php
+use App\Core\Extension\Content\ExtensionContentSchemaDefinition;
+use App\Core\Extension\ExtensionContributions;
+
+return ExtensionContributions::create()
+    ->contentSchema(ExtensionContentSchemaDefinition::create(
+        name: 'article',
+        labels: [
+            'en' => '{EXTENSION_NAME} Article',
+            'de' => '{EXTENSION_NAME} Artikel',
+        ],
+        definition: [
+            'fields' => [
+                // Keep this aligned with the current Studio content schema definition.
+            ],
+        ],
+    ));
+```
+
+Scheduler contribution example:
+
+```php
+use App\Core\Extension\ExtensionContributions;
+use App\Scheduler\SchedulerTaskDefinition;
+use App\Scheduler\SchedulerTaskType;
+
+return ExtensionContributions::create()
+    ->schedulerTask(new SchedulerTaskDefinition(
+        identifier: '{EXTENSION_SLUG}.cleanup',
+        labelKey: 'ext.{EXTENSION_SLUG}.scheduler.cleanup.label',
+        descriptionKey: 'ext.{EXTENSION_SLUG}.scheduler.cleanup.description',
+        source: '{EXTENSION_SLUG}',
+        type: SchedulerTaskType::Callable,
+        target: '{EXTENSION_SLUG}.cleanup',
+        defaultCronExpression: '15 * * * *',
+        trusted: false,
+    ))
+    // ->schedulerCallableProvider(new CleanupSchedulerProvider(...))
+;
+```
+
+Prefer provider classes under `src/` once a contribution grows beyond a few declarative objects. Provider classes should implement the matching Studio provider interface and return only extension-owned definitions.
+
 ## Database And Content Schemas
 
 Extensions must not ship free-form Doctrine migration classes or arbitrary SQL. Persistent extension data uses the documented `database` contribution contract. Studio generates physical table names from `{database-prefix}{extension-slug_}{local-table}` and only purges tables under that prefix. Extension tables may define primary keys, regular indexes, unique indexes, and foreign keys to other tables owned by the same extension. Core-owned users, ACL groups, content items, and schemas should be referenced through documented stable lookup/reference contracts once Studio exposes them, not through extension-created foreign keys to core tables. Adding new contributed tables is supported; changing or removing existing contributed tables requires a documented safe update operation once Studio exposes that contract.
