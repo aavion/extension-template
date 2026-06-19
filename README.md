@@ -236,7 +236,7 @@ Useful focused checks:
 bin/lint extensions/{EXTENSION_SLUG}
 php -l extensions/{EXTENSION_SLUG}/src/SomeFile.php
 php bin/console lint:container
-php bin/phpunit --filter PackageName
+php bin/phpunit --filter ExtensionName
 php bin/console render:route /some/extension/route
 ```
 
