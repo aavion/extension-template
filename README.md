@@ -80,7 +80,7 @@ EXTENSION_DATE=2026-06-19
 Guidelines:
 
 - `EXTENSION_SLUG` is the technical owner namespace for extension-owned identifiers.
-- `EXTENSION_SCOPE` describes the host integration surface, such as `module`, `frontend-theme`, `backend-theme`, `system-template`, `captcha-provider`, `editor-provider`, `database`, `content-schema`, or another documented Studio scope.
+- `EXTENSION_SCOPE` describes the host integration surface, such as `module`, `frontend-theme`, `backend-theme`, `system-template`, `captcha-provider`, `editor-provider`, `api`, `database`, `content-schema`, or another documented Studio scope.
 - `EXTENSION_DEPENDENCIES` declares extension or system requirements. Keep versions honest and update them when host contracts change.
 - `EXTENSION_IMAGE` points to an optional extension preview image.
 - `EXTENSION_NAMESPACE` may be declared when the extension ships PHP under `src/`; PHP files must then use that namespace or one of its child namespaces.
