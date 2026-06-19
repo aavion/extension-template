@@ -112,16 +112,16 @@ Rules:
 
 ## Database And Content Schemas
 
-Extensions must not ship free-form Doctrine migration classes or arbitrary SQL. Persistent extension data uses the documented `database` contribution contract. Studio generates physical table names from `{database-prefix}{extension-slug_}{local-table}` and only purges tables under that prefix.
+Extensions must not ship free-form Doctrine migration classes or arbitrary SQL. Persistent extension data uses the documented `database` contribution contract. Studio generates physical table names from `{database-prefix}{extension-slug_}{local-table}` and only purges tables under that prefix. Adding new contributed tables is supported; changing or removing existing contributed tables requires a documented safe update operation once Studio exposes that contract.
 
-Content schema presets use the `content-schema` scope. Contributed schemas are immutable presets owned by the extension; Studio stores them as locked schemas and creates a new version when the contributed definition changes. User-editable variants should be copied into normal custom schemas instead of editing the preset in place.
+Content schema presets use the `content-schema` scope. Contributed schemas are immutable presets owned by the extension; Studio stores them as locked schemas and creates a new version when the contributed definition changes. User-editable variants should be copied into normal custom schemas instead of editing the preset in place. Extension purge deletes unreferenced extension-owned presets; custom copies remain user-owned and are not removed by purge.
 
 ## Namespaces And Naming
 
 Use the extension slug consistently:
 
 - translation keys: `ext.{extension-slug}.section.token`
-- CSS selectors: `{extension-slug}-component`
+- CSS selectors: `{extension-slug}-component` for owner-wide UI, plus `{extension-slug}-{scope}-component` for scoped UI such as frontend, backend, captcha, or editor surfaces.
 - JavaScript events: `{extension-slug}:event-name`
 - browser storage keys: `{extension-slug}:key`
 - route names: `ext-{extension-slug}-route-name`
@@ -142,7 +142,7 @@ Recommended files:
 
 Constraints:
 
-- CSS must be extension-scoped and avoid global resets or broad element selectors.
+- CSS must be extension-scoped and avoid global resets or broad element selectors. Owner-wide selectors use `{extension-slug}-*`; scope-specific selectors may use `{extension-slug}-frontend-*`, `{extension-slug}-backend-*`, `{extension-slug}-captcha-*`, or another documented scope alias when the extension declares that scope.
 - JavaScript must be modular and clean up listeners, timers, observers, and pending async work.
 - Asset filenames and DOM metadata must not leak secrets, answers, private state, or implementation hints for security-sensitive extensions.
 - Third-party assets must keep their license, notice, attribution, and source metadata with the extension.
