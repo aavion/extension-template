@@ -1,43 +1,43 @@
-# Studio Package Template
+# Studio Extension Template
 
 > **Status**: Template
-> **Purpose:** A neutral starting point and compact rulebook for developing Studio packages.
+> **Purpose:** A neutral starting point and compact rulebook for developing Studio extensions.
 
-This repository is a template for packages that extend a Studio installation. A package is expected to live inside the host project at:
-
-```text
-/packages/{PACKAGE_SLUG}/
-```
-
-The package manifest must be available at:
+This repository is a template for extensions that extend a Studio installation. An extension is expected to live inside the host project at:
 
 ```text
-/packages/{PACKAGE_SLUG}/.manifest
+/extensions/{EXTENSION_SLUG}/
 ```
 
-Studio's root `AGENTS.md` and project rules remain binding during package development. This template documents the package-specific structure, contracts, constraints, and contribution patterns that should be followed in addition to the host rules.
+The extension manifest must be available at:
 
-## Package Goals
+```text
+/extensions/{EXTENSION_SLUG}/.manifest
+```
 
-Packages should be small, inspectable extensions of Studio. They may provide UI, themes, modules, captcha providers, editor integrations, content tools, scheduled behavior, settings, hooks, assets, translations, or other documented contributions.
+Studio's root `AGENTS.md` and project rules remain binding during extension development. This template documents the extension-specific structure, contracts, constraints, and contribution patterns that should be followed in addition to the host rules.
 
-A good package should be:
+## Extension Goals
 
-- package-scoped and collision-resistant;
-- installable, disableable, removable, and auditable through Studio's package lifecycle;
+Extensions should be small, inspectable extensions of Studio. They may provide UI, themes, modules, captcha providers, editor integrations, content tools, scheduled behavior, settings, hooks, assets, translations, or other documented contributions.
+
+A good extension should be:
+
+- extension-scoped and collision-resistant;
+- installable, disableable, removable, and auditable through Studio's extension lifecycle;
 - explicit about the Studio contracts it uses;
-- easy to review from `.manifest`, `package.php`, docs, translations, templates, and tests;
+- easy to review from `.manifest`, `extension.php`, docs, translations, templates, and tests;
 - conservative about dependencies, persistence, browser-visible metadata, and host integration assumptions.
 
 ## Required Layout
 
 ```text
-packages/{PACKAGE_SLUG}/
+extensions/{EXTENSION_SLUG}/
 ├── .manifest
 ├── AGENTS.md
 ├── README.md
 ├── LICENSE
-├── package.php
+├── extension.php
 ├── assets/
 ├── docs/
 ├── languages/
@@ -48,105 +48,105 @@ packages/{PACKAGE_SLUG}/
 └── tests/
 ```
 
-The directories may stay empty with `.gitkeep` files until the package needs them.
+The directories may stay empty with `.gitkeep` files until the extension needs them.
 
 ## Manifest
 
-`.manifest` is the package identity source consumed by Studio.
+`.manifest` is the extension identity source consumed by Studio.
 
 Required fields:
 
 ```dotenv
-PACKAGE_AUTHOR="Vendor Name"
-PACKAGE_SLUG=package-template
-PACKAGE_NAME="Package Template"
-PACKAGE_VERSION=0.1.0
-PACKAGE_SCOPE=module
+EXTENSION_AUTHOR="Vendor Name"
+EXTENSION_SLUG=extension-template
+EXTENSION_NAME="Extension Template"
+EXTENSION_VERSION=0.1.0
+EXTENSION_SCOPE=module
 ```
 
 Recommended metadata fields:
 
 ```dotenv
-PACKAGE_DESCRIPTION="Short package description"
-PACKAGE_DEPENDENCIES=[["system","0.2.6"]]
-PACKAGE_LICENSE=MIT
-PACKAGE_HOMEPAGE=https://example.com
-PACKAGE_IMAGE=assets/preview.svg
-PACKAGE_CHANNEL=main
-PACKAGE_SOURCE=https://example.com/vendor/package-template
-PACKAGE_DATE=2026-06-19
+EXTENSION_DESCRIPTION="Short extension description"
+EXTENSION_DEPENDENCIES=[["system","0.2.6"]]
+EXTENSION_LICENSE=MIT
+EXTENSION_HOMEPAGE=https://example.com
+EXTENSION_IMAGE=assets/preview.svg
+EXTENSION_CHANNEL=main
+EXTENSION_SOURCE=https://example.com/vendor/extension-template
+EXTENSION_DATE=2026-06-19
 ```
 
 Guidelines:
 
-- `PACKAGE_SLUG` is the technical owner namespace for package-owned identifiers.
-- `PACKAGE_SCOPE` describes the host integration surface, such as `module`, `theme`, `captcha-provider`, `editor-extension`, or another documented Studio scope.
-- `PACKAGE_DEPENDENCIES` declares package or system requirements. Keep versions honest and update them when host contracts change.
-- `PACKAGE_IMAGE` points to an optional package preview image.
-- `PACKAGE_NAMESPACE` may be declared when the package ships PHP under `src/`; PHP files must then use that namespace or one of its child namespaces.
-- `PACKAGE_DATE` should reflect the packaged release date.
-- Keep README examples, translation keys, asset paths, and `package.php` contributions aligned with the manifest.
+- `EXTENSION_SLUG` is the technical owner namespace for extension-owned identifiers.
+- `EXTENSION_SCOPE` describes the host integration surface, such as `module`, `frontend-theme`, `backend-theme`, `system-template`, `captcha-provider`, `editor-provider`, or another documented Studio scope.
+- `EXTENSION_DEPENDENCIES` declares extension or system requirements. Keep versions honest and update them when host contracts change.
+- `EXTENSION_IMAGE` points to an optional extension preview image.
+- `EXTENSION_NAMESPACE` may be declared when the extension ships PHP under `src/`; PHP files must then use that namespace or one of its child namespaces.
+- `EXTENSION_DATE` should reflect the extension's release date.
+- Keep README examples, translation keys, asset paths, and `extension.php` contributions aligned with the manifest.
 
-## package.php
+## extension.php
 
-`package.php` returns an array of contribution objects consumed by Studio.
+`extension.php` returns an array of contribution objects consumed by Studio.
 
 Typical contributions include:
 
 - static view injection sets and routes;
 - dynamic view injections for documented view slots;
-- package settings with defaults, validation, labels, help text, and options;
-- provider definitions for package scopes such as themes, captcha providers, editors, resolvers, or other host contracts;
+- extension settings with defaults, validation, labels, help text, and options;
+- provider definitions for extension scopes such as themes, captcha providers, editors, resolvers, or other host contracts;
 - hook, event, command, scheduler, asset, or schema contributions once those contracts are documented by Studio.
 
 Rules:
 
 - Keep contributions declarative and easy to audit.
-- Use package-owned IDs and keys, for example `{package-slug}.setting_name` or `pkg-{package-slug}-surface-name`.
+- Use extension-owned IDs and keys, for example `{extension-slug}.setting_name` or `ext-{extension-slug}-surface-name`.
 - Use translated labels and help text for anything user-facing.
 - Provide explicit defaults and validation for settings.
-- Avoid broad side effects during package discovery. Loading `package.php` should describe contributions, not perform runtime work.
-- Do not directly include files, read or write files, spawn processes, open network sockets, read raw environment/request globals, or bypass package extension points from `package.php`.
+- Avoid broad side effects during extension discovery. Loading `extension.php` should describe contributions, not perform runtime work.
+- Do not directly include files, read or write files, spawn processes, open network sockets, read raw environment/request globals, or bypass extension points from `extension.php`.
 
 ## Namespaces And Naming
 
-Use the package slug consistently:
+Use the extension slug consistently:
 
-- translation keys: `pkg.{package-slug}.section.token`
-- CSS selectors: `{package-slug}-component`
-- JavaScript events: `{package-slug}:event-name`
-- browser storage keys: `{package-slug}:key`
-- route names: `pkg-{package-slug}-route-name`
-- template/provider identifiers: package-owned and scope-specific
-- cache keys and generated files: package-owned prefixes
+- translation keys: `ext.{extension-slug}.section.token`
+- CSS selectors: `{extension-slug}-component`
+- JavaScript events: `{extension-slug}:event-name`
+- browser storage keys: `{extension-slug}:key`
+- route names: `ext-{extension-slug}-route-name`
+- template/provider identifiers: extension-owned and scope-specific
+- cache keys and generated files: extension-owned prefixes
 
-Avoid `system`, `studio`, generic shared names, user-specific names, machine paths, or another package's namespace for package-owned behavior.
+Avoid `system`, `studio`, generic shared names, user-specific names, machine paths, or another extension's namespace for extension-owned behavior.
 
 ## Assets
 
-`assets/` contains package frontend files and preview assets.
+`assets/` contains extension frontend files and preview assets.
 
 Recommended files:
 
-- `assets/package.css`
-- `assets/package.js`
+- `assets/extension.css`
+- `assets/extension.js`
 - `assets/preview.svg`
 
 Constraints:
 
-- CSS must be package-scoped and avoid global resets or broad element selectors.
+- CSS must be extension-scoped and avoid global resets or broad element selectors.
 - JavaScript must be modular and clean up listeners, timers, observers, and pending async work.
-- Asset filenames and DOM metadata must not leak secrets, answers, private state, or implementation hints for security-sensitive packages.
-- Third-party assets must keep their license, notice, attribution, and source metadata with the package.
+- Asset filenames and DOM metadata must not leak secrets, answers, private state, or implementation hints for security-sensitive extensions.
+- Third-party assets must keep their license, notice, attribution, and source metadata with the extension.
 - Curated asset indexes must stay synchronized with actual files, declared counts, categories, families, checksums, and license metadata.
 
 ## Templates
 
-`templates/` contains package Twig templates.
+`templates/` contains extension Twig templates.
 
 Rules:
 
-- Keep templates small and package-scoped.
+- Keep templates small and extension-scoped.
 - Use lowercase, hyphenated filenames.
 - Use deterministic translation keys for user-facing text.
 - Provider templates should live under the path expected by the provider contract.
@@ -157,23 +157,23 @@ Documented template roots:
 - `templates/frontend/**` is referenced as `@frontend/...`.
 - `templates/backend/**` is referenced as `@backend/...`.
 - `templates/provider/{provider}/**` is referenced through matching provider slots.
-- `templates/macros/{package-slug}/**` may contain package-owned macros.
+- `templates/macros/{extension-slug}/**` may contain extension-owned macros.
 
 ## Translations
 
-`languages/{locale}/` contains package translation catalogues.
+`languages/{locale}/` contains extension translation catalogues.
 
 Rules:
 
 - Keep every supported locale synchronized.
-- Use `pkg.{package-slug}.` as the key prefix.
+- Use `ext.{extension-slug}.` as the key prefix.
 - Translate labels, buttons, links, placeholders, help text, validation messages, flash messages, empty states, errors, navigation text, and accessibility text.
 - Logs, developer exceptions, CLI output, test names, and internal debug strings do not need localization.
-- Do not hardcode available languages in package runtime behavior.
+- Do not hardcode available languages in extension runtime behavior.
 
 ## PHP Source
 
-`src/` contains package PHP code when the package needs services, providers, value objects, validators, commands, hooks, or runtime behavior.
+`src/` contains extension PHP code when the extension needs services, providers, value objects, validators, commands, hooks, or runtime behavior.
 
 Rules:
 
@@ -181,39 +181,39 @@ Rules:
 - Prefer Studio and Symfony contracts over custom infrastructure.
 - Keep classes small and behavior-focused.
 - Validate public input at the boundary.
-- Keep package-owned message codes, settings, service IDs, and cache keys under the package namespace.
-- Avoid relying on undocumented Studio internals. If a host contract is missing, document the assumption and keep the package-side implementation narrow.
+- Keep extension-owned message codes, settings, service IDs, and cache keys under the extension namespace.
+- Avoid relying on undocumented Studio internals. If a host contract is missing, document the assumption and keep the extension-side implementation narrow.
 
 ## Tests
 
-`tests/` contains package-local tests when practical. Some integration tests may belong in the host Studio test suite if they require host package discovery, service wiring, routes, Live endpoints, or rendered surfaces.
+`tests/` contains extension-local tests when practical. Some integration tests may belong in the host Studio test suite if they require host extension discovery, service wiring, routes, Live endpoints, or rendered surfaces.
 
 Recommended coverage:
 
-- package discovery and manifest parsing;
-- `package.php` contribution shape;
+- extension discovery and manifest parsing;
+- `extension.php` contribution shape;
 - settings defaults and validation;
 - provider registration;
 - translation key coverage;
 - rendered templates or provider output;
-- package lifecycle behavior;
+- extension lifecycle behavior;
 - security-sensitive token, replay, cache, or redaction behavior;
-- asset index validation when curated assets are part of the package.
+- asset index validation when curated assets are part of the extension.
 
 ## Optional Docs
 
-`docs/` may contain package-specific manuals, design notes, and maintenance files.
+`docs/` may contain extension-specific manuals, design notes, and maintenance files.
 
 Optional files:
 
-- `docs/CLASSMAP.md`: keep current when the package has public PHP callables, providers, commands, hooks, Twig extensions, event subscribers, or other contributor-facing entry points.
-- `docs/WORKLOG.md`: keep current when the package uses a session worklog workflow.
+- `docs/CLASSMAP.md`: keep current when the extension has public PHP callables, providers, commands, hooks, Twig extensions, event subscribers, or other contributor-facing entry points.
+- `docs/WORKLOG.md`: keep current when the extension uses a session worklog workflow.
 
 If these files do not exist, do not create them only to satisfy process. Use README, CHANGELOG, issue notes, or PR notes for durable context instead.
 
 ## Security Constraints
 
-Packages must treat request input and browser-visible state as hostile.
+Extensions must treat request input and browser-visible state as hostile.
 
 Follow these constraints:
 
@@ -224,20 +224,20 @@ Follow these constraints:
 - consume one-shot IDs atomically where replay resistance matters;
 - set appropriate cache headers for private Live/API responses;
 - document cookies, browser storage, roles, ACLs, public endpoints, or retained data;
-- provide uninstall, purge, and retention behavior for package-owned persisted state.
+- provide uninstall, purge, and retention behavior for extension-owned persisted state.
 
 ## Verification
 
-Run verification from the Studio project root so package discovery and the root project rules are active.
+Run verification from the Studio project root so extension discovery and the root project rules are active.
 
 Useful focused checks:
 
 ```bash
-bin/lint packages/{PACKAGE_SLUG}
-php -l packages/{PACKAGE_SLUG}/src/SomeFile.php
+bin/lint extensions/{EXTENSION_SLUG}
+php -l extensions/{EXTENSION_SLUG}/src/SomeFile.php
 php bin/console lint:container
 php bin/phpunit --filter PackageName
-php bin/console render:route /some/package/route
+php bin/console render:route /some/extension/route
 ```
 
 Choose checks based on the changed surface:
@@ -247,7 +247,7 @@ Choose checks based on the changed surface:
 - Twig: lint templates and render the affected host route or provider surface;
 - CSS/JS: lint assets and run JavaScript tests or asset builds where applicable;
 - PHP/service changes: syntax, focused tests, and container lint;
-- lifecycle/provider changes: host package discovery/validation once available;
+- lifecycle/provider changes: host extension discovery/validation once available;
 - curated assets: validate index syntax, path existence, declared counts, licenses, duplicates, and ignored-file status.
 
 If a recommended check cannot run because the host contract or command does not exist yet, record that explicitly in PR notes or the final response.
@@ -256,12 +256,12 @@ If a recommended check cannot run because the host contract or command does not 
 
 Before release or PR readiness:
 
-- `.manifest` matches package behavior, version, source, scope, and dependencies.
-- `package.php` contributions are package-scoped and documented.
-- README and package docs describe setup, behavior, constraints, and known host contracts.
+- `.manifest` matches extension behavior, version, source, scope, and dependencies.
+- `extension.php` contributions are extension-scoped and documented.
+- README and extension docs describe setup, behavior, constraints, and known host contracts.
 - Translation catalogues are synchronized.
 - License and third-party attribution files are present.
-- Package-owned assets and indexes are synchronized.
+- Extension-owned assets and indexes are synchronized.
 - Tests or documented verification cover changed behavior.
 - Security/privacy implications are reviewed.
 - Install, update, deactivate, purge, and retained-state behavior are understood.

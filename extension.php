@@ -3,17 +3,17 @@
 declare(strict_types=1);
 
 /*
- * Optional Studio package runtime entry point.
+ * Optional Studio extension runtime entry point.
  *
- * Studio may include this file only after package validation and activation.
+ * Studio may include this file only after extension validation and activation.
  * Replace this placeholder with documented contribution objects when the
- * package needs runtime contributions such as settings, view injections,
+ * extension needs runtime contributions such as settings, view injections,
  * providers, hooks, scheduler tasks, or other supported contracts.
  *
  * Keep discovery side-effect free: do not read/write files, spawn processes,
  * open network connections, inspect raw request/environment globals, or load
- * package code outside documented Studio package extension points here.
+ * extension code outside documented Studio extension points here.
  */
 return [
-    // Add package contribution objects here.
+    // Add extension contribution objects here.
 ];
