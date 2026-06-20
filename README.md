@@ -68,7 +68,7 @@ Recommended metadata fields:
 
 ```dotenv
 EXTENSION_DESCRIPTION="Short extension description"
-EXTENSION_DEPENDENCIES=[["system","0.2.6"]]
+EXTENSION_DEPENDENCIES=[["system",">=0.2.6"]]
 EXTENSION_LICENSE=MIT
 EXTENSION_HOMEPAGE=https://example.com
 EXTENSION_IMAGE=assets/preview.svg

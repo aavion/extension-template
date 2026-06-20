@@ -9,7 +9,7 @@ EXTENSION_NAME="Extension Template"
 EXTENSION_DESCRIPTION="Template extension for Studio extension development"
 EXTENSION_VERSION=0.1.0
 EXTENSION_SCOPE=module
-EXTENSION_DEPENDENCIES=[["system","0.2.6"]]
+EXTENSION_DEPENDENCIES=[["system",">=0.2.6"]]
 EXTENSION_LICENSE=MIT
 EXTENSION_HOMEPAGE=https://example.com
 EXTENSION_IMAGE=assets/preview.svg
