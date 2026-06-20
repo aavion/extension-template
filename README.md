@@ -79,7 +79,7 @@ EXTENSION_DATE=2026-06-19
 
 Guidelines:
 
-- `EXTENSION_SLUG` is the technical owner namespace for extension-owned identifiers. It must start with a lowercase letter, use only lowercase letters, digits, and single hyphen-separated segments, stay at 120 characters or less, and match the extension folder name exactly.
+- `EXTENSION_SLUG` is the technical owner namespace for extension-owned identifiers. It must start with a lowercase letter, use only lowercase letters, digits, and single hyphen-separated segments, stay at 60 characters or less, and match the extension folder name exactly.
 - `EXTENSION_SCOPE` describes the host integration surface, such as `module`, `frontend-theme`, `backend-theme`, `system-template`, `captcha-provider`, `editor-provider`, `api`, `database`, `content-schema`, or another documented Studio scope.
 - `EXTENSION_DEPENDENCIES` declares extension or system requirements. Keep versions honest and update them when host contracts change.
 - `EXTENSION_IMAGE` points to an optional extension preview image.

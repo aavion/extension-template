@@ -20,7 +20,7 @@
 ## Manifest
 - `.manifest` is the extension identity source consumed by Studio.
 - `EXTENSION_SLUG` defines the extension-owned namespace for identifiers, paths, translations, templates, assets, settings, provider keys, services, routes, storage keys, cache keys, and generated files.
-- `EXTENSION_SLUG` must start with a lowercase letter, use only lowercase letters, digits, and single hyphen-separated segments, stay at 120 characters or less, and match the extension folder name exactly.
+- `EXTENSION_SLUG` must start with a lowercase letter, use only lowercase letters, digits, and single hyphen-separated segments, stay at 60 characters or less, and match the extension folder name exactly.
 - Keep `.manifest`, README examples, translation keys, asset paths, and extension contributions aligned whenever extension identity or behavior changes.
 - Use `EXTENSION_IMAGE` only for a real extension preview asset.
 - Declare `EXTENSION_NAMESPACE` only when the extension ships PHP code under `src/`.
